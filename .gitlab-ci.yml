@@ -1,0 +1,28 @@
+stages:
+  - test
+  - build
+  - docker
+
+test_job:
+  stage: test
+  image: golang:1.23
+  script:
+    - cd Prak_8/services/tasks
+    - go mod tidy
+    - go test ./...
+
+build_job:
+  stage: build
+  image: golang:1.23
+  script:
+    - cd Prak_8/services/tasks
+    - go build ./...
+
+docker_job:
+  stage: docker
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - cd Prak_8/services/tasks
+    - docker build -t techip-tasks:$CI_COMMIT_SHORT_SHA .
