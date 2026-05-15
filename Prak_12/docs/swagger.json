@@ -1,0 +1,139 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Tasks API",
+    "description": "REST API для управления задачами. Практическое занятие №12",
+    "version": "1.0"
+  },
+  "basePath": "/",
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/v1/tasks": {
+      "get": {
+        "summary": "Получить список задач",
+        "description": "Возвращает все задачи",
+        "tags": ["tasks"],
+        "responses": {
+          "200": {
+            "description": "Список задач",
+            "schema": { "type": "array", "items": { "$ref": "#/definitions/Task" } }
+          }
+        }
+      },
+      "post": {
+        "summary": "Создать задачу",
+        "description": "Создаёт новую задачу",
+        "tags": ["tasks"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "task",
+            "required": true,
+            "schema": { "$ref": "#/definitions/CreateTaskRequest" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Созданная задача",
+            "schema": { "$ref": "#/definitions/Task" }
+          },
+          "400": {
+            "description": "Ошибка валидации",
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
+          }
+        }
+      }
+    },
+    "/v1/tasks/{id}": {
+      "get": {
+        "summary": "Получить задачу по ID",
+        "tags": ["tasks"],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "type": "string", "description": "ID задачи" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Задача",
+            "schema": { "$ref": "#/definitions/Task" }
+          },
+          "404": {
+            "description": "Задача не найдена",
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Обновить задачу",
+        "description": "Частичное обновление задачи",
+        "tags": ["tasks"],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "type": "string" },
+          {
+            "in": "body",
+            "name": "task",
+            "required": true,
+            "schema": { "$ref": "#/definitions/UpdateTaskRequest" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Обновлённая задача",
+            "schema": { "$ref": "#/definitions/Task" }
+          },
+          "404": {
+            "description": "Задача не найдена",
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Удалить задачу",
+        "tags": ["tasks"],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "204": { "description": "Задача удалена" },
+          "404": {
+            "description": "Задача не найдена",
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Task": {
+      "type": "object",
+      "properties": {
+        "id":          { "type": "string",  "example": "t_001" },
+        "title":       { "type": "string",  "example": "Изучить GraphQL" },
+        "description": { "type": "string",  "example": "Практическая работа" },
+        "done":        { "type": "boolean", "example": false }
+      }
+    },
+    "CreateTaskRequest": {
+      "type": "object",
+      "required": ["title"],
+      "properties": {
+        "title":       { "type": "string" },
+        "description": { "type": "string" }
+      }
+    },
+    "UpdateTaskRequest": {
+      "type": "object",
+      "properties": {
+        "title":       { "type": "string" },
+        "description": { "type": "string" },
+        "done":        { "type": "boolean" }
+      }
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "error": { "type": "string" }
+      }
+    }
+  }
+}
